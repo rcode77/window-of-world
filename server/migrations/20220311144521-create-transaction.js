@@ -32,6 +32,9 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: "Pending",
       },
+      accountNumber: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         defaultValue: Sequelize.fn("now"),

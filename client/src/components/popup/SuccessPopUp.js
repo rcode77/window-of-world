@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const styles = {
   link: {
@@ -8,7 +8,7 @@ const styles = {
     color: "#29BD11",
     fontWeight: "400",
     fontSize: "24px",
-    cursor: "pointer",
+    // cursor: "pointer",
   },
 };
 
@@ -22,10 +22,10 @@ function SuccessPopUp(props) {
     >
       <center>
         <Modal.Body style={{ width: "80%" }}>
-          <Link to="/homes" style={styles.link}>
+          <p style={styles.link}>
             Thank you for subscribing to premium, your premium package will be
             active after our admin approves your transaction, thank you
-          </Link>
+          </p>
         </Modal.Body>
       </center>
     </Modal>

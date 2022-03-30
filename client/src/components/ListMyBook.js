@@ -1,9 +1,5 @@
 import React from "react";
-import { useState } from "react";
-import { Card, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-
-import DangerPopUp from "./popup/DangerPopUp";
+import { Card } from "react-bootstrap";
 
 const styles = {
   bookName: {
@@ -20,8 +16,7 @@ const styles = {
   },
 };
 
-export default function ListBook({ item }) {
-  const [dangerModal, setDangerModal] = useState(false);
+export default function ListMyBook({ item }) {
   return (
     <center>
       <Card style={{ backgroundColor: "#E5E5E5", border: "none" }}>
@@ -30,7 +25,12 @@ export default function ListBook({ item }) {
             cursor: "pointer",
           }}
         >
-          <Card.Img variant="top" src={item.cover} style={{ width: "90%" }} />
+          <Card.Img
+            variant="top"
+            src={"http://localhost:5000/uploads/images/" + item.myBook.cover}
+            alt={item.myBook.cover}
+            style={{ width: "90%" }}
+          />
         </a>
         <Card.Body>
           <a
@@ -40,13 +40,11 @@ export default function ListBook({ item }) {
               cursor: "pointer",
             }}
           >
-            <Card.Title style={styles.bookName}>{item.title}</Card.Title>
+            <Card.Title style={styles.bookName}>{item.myBook.title}</Card.Title>
           </a>
-          <Card.Text style={styles.bookAuthor}>{item.author}</Card.Text>
+          <Card.Text style={styles.bookAuthor}>{item.myBook.author}</Card.Text>
         </Card.Body>
       </Card>
-
-      <DangerPopUp show={dangerModal} onHide={() => setDangerModal(false)} />
     </center>
   );
 }

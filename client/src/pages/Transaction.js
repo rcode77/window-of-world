@@ -13,12 +13,23 @@ const styles = {
     fontSize: "24px",
     fontWeight: "700",
   },
+  success: {
+    color: "#0ACF83",
+    fontWeight: "700",
+  },
+  danger: {
+    color: "#FF0742",
+    fontWeight: "700",
+  },
+  pending: {
+    color: "#F7941E",
+    fontWeight: "700",
+  },
 };
 
 function Transaction() {
   const [transactions, setTransactions] = useState([]);
   const { id } = useParams();
-  const [transaction, setTransaction] = useState({ paymentStatus: "" });
 
   // Get product data from database
   const getTransactions = async () => {
@@ -26,57 +37,25 @@ function Transaction() {
       const response = await API.get("/transactions");
       // Store product data to useState variabel
       setTransactions(response.data.data);
-
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Fetching category data by id from database
-  const getTransaction = async (id) => {
-    try {
-      const response = await API.get("/transaction/" + id);
-      // Store product data to useState variabel
-      setTransaction(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
+  const approve = async (id) => {
+    const response = await API.patch("/transaction/" + id);
+
+    getTransactions();
   };
 
-  const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      console.log("berhasil");
-      // Configuration
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
+  const cancel = async (id) => {
+    const response = await API.patch("/cancel/" + id);
 
-      // Data body
-      // const body = JSON.stringify(transaction{paymentStatus: "Approved"});
-
-      // Insert category data
-      const response = await API.patch(
-        "/transaction/" + id,
-        { paymentStatus: "Approved" },
-        config
-      );
-
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+    getTransactions();
   };
 
   useEffect(() => {
     getTransactions();
-  }, []);
-
-  useEffect(() => {
-    getTransaction(id);
   }, []);
 
   return (
@@ -88,14 +67,14 @@ function Transaction() {
           </Col>
 
           <center>
-            <Col sm={9} style={{ marginRight: "20px", marginBottom: "300px" }}>
+            <Col sm={9} style={{ marginRight: "20px", marginBottom: "200px" }}>
               <p style={styles.proTitle}>Incoming Transaction</p>
               {transactions.length !== 0 ? (
                 <Col>
                   <Col>
                     <Table striped bordered hover>
                       <thead>
-                        <tr>
+                        <tr style={{ color: "red" }}>
                           <th>No</th>
                           <th>Users</th>
                           <th>Bukti Transfer</th>
@@ -112,10 +91,24 @@ function Transaction() {
                             <td>{item.user.fullName}</td>
                             <td>{item.transferProof}</td>
                             <td>{item.remainingActive} / Hari</td>
-                            <td style={{ color: "#0ACF83" }}>
+                            <td
+                              style={
+                                item.userStatus === "Not Active"
+                                  ? styles.danger
+                                  : styles.success
+                              }
+                            >
                               {item.userStatus}
                             </td>
-                            <td>{item.paymentStatus}</td>
+                            <td
+                              style={
+                                item.paymentStatus === "Pending"
+                                  ? styles.pending
+                                  : styles.success
+                              }
+                            >
+                              {item.paymentStatus}
+                            </td>
                             <td>
                               <Dropdown>
                                 <Dropdown.Toggle
@@ -126,13 +119,13 @@ function Transaction() {
                                 <Dropdown.Menu>
                                   <center>
                                     <Dropdown.Item
-                                      onClick={handleSubmit}
+                                      onClick={() => approve(item.id)}
                                       style={{ color: "#0ACF83" }}
                                     >
                                       Aproved
                                     </Dropdown.Item>
                                     <Dropdown.Item
-                                      href="#/action-2"
+                                      onClick={() => cancel(item.id)}
                                       style={{ color: "#FF0742" }}
                                     >
                                       Cancel
@@ -151,12 +144,12 @@ function Transaction() {
                 <Col>
                   <div className="text-center pt-5">
                     <img
-                      src="assets/file.png"
+                      src="assets/nodata.png"
                       className="img-fluid"
                       style={{ width: "40%" }}
                       alt="empty"
                     />
-                    <div className="mt-3">No data product</div>
+                    {/* <div className="mt-3">No data product</div> */}
                   </div>
                 </Col>
               )}

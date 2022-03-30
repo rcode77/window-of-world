@@ -106,8 +106,15 @@ exports.login = async (req, res) => {
       status: "success",
       data: {
         user: {
+          id: userExist.id,
           email: userExist.email,
+          fullName: userExist.fullName,
           role: userExist.role,
+          subscribe: userExist.subscribe,
+          gender: userExist.gender,
+          phone: userExist.phone,
+          address: userExist.address,
+          userImage: userExist.userImage,
           token,
         },
       },
@@ -198,9 +205,14 @@ exports.checkAuth = async (req, res) => {
       data: {
         user: {
           id: dataUser.id,
-          name: dataUser.name,
+          fullName: dataUser.fullName,
           email: dataUser.email,
+          subscribe: dataUser.subscribe,
           role: dataUser.role,
+          gender: dataUser.gender,
+          phone: dataUser.phone,
+          address: dataUser.address,
+          userImage: dataUser.userImage,
         },
       },
     });

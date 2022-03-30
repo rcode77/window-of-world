@@ -1,5 +1,5 @@
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { API } from "../config/api";
 
@@ -53,15 +53,17 @@ function AddBook() {
   const [preview, setPreview] = useState(null);
 
   const [form, setForm] = useState({
+    cover: "",
     title: "",
     publicationDate: "",
     pages: "",
+    author: "",
     isbn: "",
     about: "",
     bookFile: "",
-    coverBook: "",
   });
 
+  const { title, publicationDate, pages, author, isbn, about } = form;
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -69,10 +71,7 @@ function AddBook() {
         e.target.type === "file" ? e.target.files : e.target.value,
     });
 
-    if (
-      e.target.type === "file" &&
-      e.target.files[0].type !== "application/epub+zip"
-    ) {
+    if (e.target.type === "file" && e.target.name === "cover") {
       let url = URL.createObjectURL(e.target.files[0]);
       setPreview(url);
     }
@@ -81,6 +80,7 @@ function AddBook() {
   const handleOnSubmit = async (e) => {
     try {
       e.preventDefault();
+
       const config = {
         headers: {
           "Content-type": "multipart/form-data",
@@ -88,17 +88,29 @@ function AddBook() {
       };
 
       const formData = new FormData();
-      console.log(form.coverBook);
       formData.set("title", form.title);
       formData.set("publicationDate", form.publicationDate);
       formData.set("pages", form.pages);
       formData.set("author", form.author);
       formData.set("isbn", form.isbn);
       formData.set("about", form.about);
+      formData.set("cover", form.cover[0], form.cover[0].name);
       formData.set("bookFile", form.bookFile[0], form.bookFile[0].name);
-      // formData.set("bookCover", form.bookCover[0], form.bookCover[0].name);
 
       const response = await API.post("/book", formData, config);
+
+      setForm({
+        title: "",
+        publicationDate: "",
+        pages: "",
+        author: "",
+        isbn: "",
+        about: "",
+        bookFile: "",
+        cover: "",
+      });
+
+      setPreview(null);
 
       if (response.data.status === "success") {
         const alert = (
@@ -110,6 +122,8 @@ function AddBook() {
           </Alert>
         );
         setMessage(alert);
+
+        new FormData();
       } else {
         const alert = (
           <Alert
@@ -144,6 +158,7 @@ function AddBook() {
                     name="title"
                     onChange={handleChange}
                     style={styles.form}
+                    value={title}
                   />
                 </Form.Group>
 
@@ -154,6 +169,7 @@ function AddBook() {
                     name="publicationDate"
                     onChange={handleChange}
                     style={styles.form}
+                    value={publicationDate}
                   />
                 </Form.Group>
 
@@ -164,6 +180,7 @@ function AddBook() {
                     name="pages"
                     onChange={handleChange}
                     style={styles.form}
+                    value={pages}
                   />
                 </Form.Group>
 
@@ -174,6 +191,7 @@ function AddBook() {
                     name="author"
                     onChange={handleChange}
                     style={styles.form}
+                    value={author}
                   />
                 </Form.Group>
 
@@ -184,6 +202,7 @@ function AddBook() {
                     name="isbn"
                     onChange={handleChange}
                     style={styles.form}
+                    value={isbn}
                   />
                 </Form.Group>
 
@@ -195,6 +214,7 @@ function AddBook() {
                     placeholder="About This Book"
                     name="about"
                     onChange={handleChange}
+                    value={about}
                   />
                 </Form.Group>
 
@@ -224,14 +244,17 @@ function AddBook() {
                   <Col sm={3}>
                     <Form.Group className="form-group">
                       <Form.Control
-                        id="input-file"
+                        id="input-cover"
                         className="input-file"
                         type="file"
+                        name="cover"
                         hidden
-                        name="coverBook"
                         onChange={handleChange}
                       />
-                      <Form.Label htmlFor="input-file" style={styles.fileInput}>
+                      <Form.Label
+                        htmlFor="input-cover"
+                        style={styles.fileInput}
+                      >
                         <span className="me-2">Attach Book Cover</span>
                         <img
                           src="assets/file2.png"

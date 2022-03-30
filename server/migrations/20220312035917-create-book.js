@@ -29,7 +29,7 @@ module.exports = {
       bookFile: {
         type: Sequelize.STRING,
       },
-      bookCover: {
+      cover: {
         type: Sequelize.STRING,
       },
       createdAt: {

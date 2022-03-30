@@ -26,6 +26,34 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.getUser = async (req, res) => {
+  try {
+    const { id } = req.user;
+
+    const user = await user.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["password", "createdAt", "updatedAt"],
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,6 +69,37 @@ exports.deleteUser = async (req, res) => {
       data: {
         id: id,
       },
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { gender, phone, address } = req.body;
+    const userImage = req.file.filename;
+
+    let data = {
+      gender,
+      phone,
+      address,
+      userImage,
+    };
+
+    await user.update(data, {
+      where: {
+        id,
+      },
+    });
+
+    res.send({
+      status: "success",
     });
   } catch (error) {
     console.log(error);

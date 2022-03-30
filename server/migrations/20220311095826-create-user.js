@@ -20,6 +20,27 @@ module.exports = {
       role: {
         type: Sequelize.STRING,
       },
+      subscribe: {
+        type: Sequelize.STRING,
+        defaultValue: "Not Subscribe",
+      },
+      gender: {
+        type: Sequelize.STRING,
+        defaultValue: "-",
+      },
+      phone: {
+        type: Sequelize.STRING,
+        defaultValue: "-",
+      },
+      address: {
+        type: Sequelize.STRING,
+        defaultValue: "-",
+      },
+      userImage: {
+        type: Sequelize.STRING,
+        defaultValue: "-",
+      },
+
       createdAt: {
         allowNull: false,
         defaultValue: Sequelize.fn("now"),

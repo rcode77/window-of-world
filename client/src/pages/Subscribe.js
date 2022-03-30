@@ -1,16 +1,6 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
 
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  InputGroup,
-  FormControl,
-  Alert,
-} from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 
 import SuccessPopUp from "../components/popup/SuccessPopUp";
 
@@ -19,6 +9,7 @@ import input from "./../assets/file.png";
 import Navbar from "../components/navbar/Navbar";
 
 import { API } from "../config/api";
+import { UserContext } from "../context/UserContext";
 
 const styles = {
   title: {
@@ -79,9 +70,11 @@ function Subscribe() {
   const [successModal, setSuccessModal] = useState(false);
   const [message, setMessage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [state] = useContext(UserContext);
 
   const [form, setForm] = useState({
     userId: "",
+    accountNumber: "",
     transferProof: "",
   });
 
@@ -92,10 +85,7 @@ function Subscribe() {
         e.target.type === "file" ? e.target.files : e.target.value,
     });
 
-    if (
-      e.target.type === "file" &&
-      e.target.files[0].type !== "application/epub+zip"
-    ) {
+    if (e.target.type === "file") {
       let url = URL.createObjectURL(e.target.files[0]);
       setPreview(url);
     }
@@ -111,7 +101,8 @@ function Subscribe() {
       };
 
       const formData = new FormData();
-      formData.set("userId", form.userId);
+      formData.set("userId", state.user.id);
+      formData.set("accountNumber", form.accountNumber);
       formData.set(
         "transferProof",
         form.transferProof[0],
@@ -119,6 +110,13 @@ function Subscribe() {
       );
 
       const response = await API.post("/transaction", formData, config);
+
+      setForm({
+        accountNumber: "",
+        transferProof: "",
+      });
+
+      setPreview(null);
 
       if (response.data.status === "success") {
         const alert = (
@@ -173,13 +171,19 @@ function Subscribe() {
                       </Col>
                       <Col sm={9}>
                         <Form.Control
+                          type="text"
+                          name="userId"
+                          hidden
+                          onChange={handleChange}
+                        />
+                        <Form.Control
                           style={{
                             backgroundColor: "#BCBCBC40",
                             border: "2px solid #BCBCBC",
                           }}
-                          type="text"
+                          type="number"
                           placeholder="Input your account number"
-                          name="userId"
+                          name="accountNumber"
                           onChange={handleChange}
                         />
                         <Col>

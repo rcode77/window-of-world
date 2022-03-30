@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       remainingActive: DataTypes.DATE,
       userStatus: DataTypes.STRING,
       paymentStatus: DataTypes.STRING,
+      accountNumber: DataTypes.STRING,
     },
     {
       sequelize,

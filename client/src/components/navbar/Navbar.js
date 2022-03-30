@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
 import logo from "../../assets/wow2.png";
-import cProfile from "../../assets/CProfile.png";
+import cProfile from "../../assets/userImage.png";
 import user from "../../assets/user.png";
 import userActive from "../../assets/user2.png";
 import bill from "../../assets/bill.png";
@@ -18,7 +18,13 @@ const styles = {
     fontSize: "24px",
     fontWeight: "700",
   },
-  pStat: {
+  sub: {
+    marginTop: "10px",
+    fontSize: "18px",
+    fontWeight: "700",
+    color: "green",
+  },
+  notSub: {
     marginTop: "10px",
     fontSize: "18px",
     fontWeight: "700",
@@ -65,9 +71,31 @@ export default function Navbar(props) {
           <img src={logo} alt="logo" style={{ marginTop: "20px" }} />
         </Link>
         <br />
-        <img src={cProfile} alt="cprofile" style={{ marginTop: "20px" }} />
-        <p style={styles.pName}>Egi Ganteng</p>
-        <p style={styles.pStat}>Not Subscribed Yet</p>
+        <img
+          src={
+            state.user.userImage === "-"
+              ? cProfile
+              : "http://localhost:5000/uploads/images/" + state.user.userImage
+          }
+          alt="cprofile"
+          style={{
+            marginTop: "20px",
+            width: "100px",
+            height: "100px",
+            objectFit: "cover",
+            objectPosition: "middle",
+          }}
+          className="rounded-circle border-black"
+        />
+        <p style={styles.pName}>{state.user.fullName}</p>
+        <div>
+          {state.user.subscribe === "Subscribed" ? (
+            <p style={styles.sub}>Subscribed</p>
+          ) : (
+            <p style={styles.notSub}>Not Subscribed Yet</p>
+          )}
+        </div>
+
         <hr />
         <ul style={{ listStyleType: "none", textAlign: "start" }}>
           <Row style={{ marginTop: "40px" }}>

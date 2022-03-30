@@ -1,5 +1,6 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -7,9 +8,13 @@ import { faMarsAndVenus } from "@fortawesome/free-solid-svg-icons";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 
-import book4 from "./../assets/Book4.png";
-import profile from "./../assets/Profile.png";
+import profile from "./../assets/userImage.png";
 import Navbar from "../components/navbar/Navbar";
+
+import { API } from "../config/api";
+import ListMyBook from "../components/ListMyBook";
+import { UserContext } from "../context/UserContext";
+import EditProfile from "../components/EditProfile";
 
 const styles = {
   bookName: {
@@ -54,7 +59,29 @@ const styles = {
 };
 
 function Profile() {
+  const [state, dispatch] = useContext(UserContext);
   const title = "Profile";
+  const [editProfile, setEditProfile] = useState(false);
+
+  console.log(state);
+
+  const [myLists, setMyLists] = useState([]);
+
+  const getMyLists = async () => {
+    try {
+      const response = await API.get("/my-lists");
+
+      console.log(response);
+
+      setMyLists(response.data.data.myLists);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMyLists();
+  }, [state]);
 
   return (
     <div style={{ backgroundColor: "#E5E5E5" }}>
@@ -81,7 +108,7 @@ function Profile() {
                       ></FontAwesomeIcon>
                     </Col>
                     <Col sm={10} style={{ marginTop: "45px" }}>
-                      <Col style={styles.proDetail}>egigans@gmail.com</Col>
+                      <Col style={styles.proDetail}>{state.user.email}</Col>
                       <Col style={styles.proName}>Email</Col>
                     </Col>
                   </Row>
@@ -98,7 +125,7 @@ function Profile() {
                       ></FontAwesomeIcon>
                     </Col>
                     <Col sm={10} style={{ marginTop: "5px" }}>
-                      <Col style={styles.proDetail}>Male</Col>
+                      <Col style={styles.proDetail}>{state.user.gender}</Col>
                       <Col style={styles.proName}>Gender</Col>
                     </Col>
                   </Row>
@@ -115,7 +142,7 @@ function Profile() {
                       ></FontAwesomeIcon>
                     </Col>
                     <Col sm={10} style={{ marginTop: "5px" }}>
-                      <Col style={styles.proDetail}>0812-8623-8911</Col>
+                      <Col style={styles.proDetail}>{state.user.phone}</Col>
                       <Col style={styles.proName}>Mobile phone</Col>
                     </Col>
                   </Row>
@@ -132,9 +159,7 @@ function Profile() {
                       ></FontAwesomeIcon>
                     </Col>
                     <Col sm={10} style={{ marginTop: "5px" }}>
-                      <Col style={styles.proDetail}>
-                        Perumahan Permata Bintaro Residence C-3
-                      </Col>
+                      <Col style={styles.proDetail}>{state.user.address}</Col>
                       <Col style={styles.proName}>Address</Col>
                     </Col>
                   </Row>
@@ -142,8 +167,22 @@ function Profile() {
                 <Col style={{ display: "flex", justifyContent: "flex-end" }}>
                   <Row style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Col sm={10} style={{ marginTop: "30px" }}>
-                      <img src={profile} alt="" />
-                      <Button style={styles.btnSend}>Edit Profile</Button>
+                      <img
+                        src={
+                          state.user.userImage === "-"
+                            ? profile
+                            : "http://localhost:5000/uploads/images/" +
+                              state.user.userImage
+                        }
+                        alt={state.user.userImage}
+                        style={{ width: "240px" }}
+                      />
+                      <Button
+                        style={styles.btnSend}
+                        onClick={() => setEditProfile(true)}
+                      >
+                        Edit Profile
+                      </Button>
                     </Col>
                   </Row>
                 </Col>
@@ -151,21 +190,29 @@ function Profile() {
             </Col>
             <p style={styles.proTitle}>My List Book</p>
             <Row>
-              <Col sm={3}>
-                <center>
-                  <Link to="/detailbooka">
-                    <img src={book4} alt="book4" />
-                  </Link>
-                  <Link to="/detailbooka" style={styles.bookName}>
-                    Tess on the Road
-                  </Link>
-                </center>
-                <p style={styles.bookAuthor}>Rachel Hartman</p>
+              <Col className="d-flex flex-wrap">
+                {myLists?.map((item, index) => {
+                  return (
+                    <Col sm={3} key={index}>
+                      {item.me.id === state.user.id ? (
+                        <Link
+                          to={"/book/" + item.myBook.id}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ListMyBook item={item} />
+                        </Link>
+                      ) : (
+                        <></>
+                      )}
+                    </Col>
+                  );
+                })}
               </Col>
             </Row>
           </Col>
         </Row>
       </Container>
+      <EditProfile show={editProfile} onHide={() => setEditProfile(false)} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { Container, Row, Col, Card } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Container, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 
 import banner from "./../assets/Frame1.png";
@@ -9,6 +9,7 @@ import DangerPopUp from "../components/popup/DangerPopUp";
 import ListBook from "../components/ListBook";
 
 import { API } from "../config/api";
+import { UserContext } from "../context/UserContext";
 
 const styles = {
   pName: {
@@ -50,6 +51,7 @@ function Home() {
   const [dangerModal, setDangerModal] = useState(false);
 
   const [books, setBooks] = useState([]);
+  const [state] = useContext(UserContext);
 
   // Create function get books data from database here ...
   const getBooks = async () => {
@@ -67,13 +69,6 @@ function Home() {
   useEffect(() => {
     getBooks();
   }, []);
-
-  const breakpointColumnsObj = {
-    default: 6,
-    1100: 4,
-    700: 3,
-    500: 2,
-  };
 
   return (
     <div style={{ backgroundColor: "#E5E5E5" }}>
@@ -94,9 +89,27 @@ function Home() {
               <Col>
                 {books.length !== 0 ? (
                   <Col className="d-flex flex-wrap">
-                    {books?.map((item, index) => (
-                      <Col md={3}>
-                        <ListBook item={item} key={index} />
+                    {books?.map((item) => (
+                      <Col md={3} key={item.id}>
+                        {state.user.subscribe === "Subscribed" ? (
+                          <Link
+                            to={"/book/" + item.id}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <ListBook item={item} />
+                          </Link>
+                        ) : (
+                          <a
+                            style={{
+                              textDecoration: "none",
+                              color: "black",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => setDangerModal(true)}
+                          >
+                            <ListBook item={item} />
+                          </a>
+                        )}
                       </Col>
                     ))}
                   </Col>
@@ -104,12 +117,11 @@ function Home() {
                   <Col>
                     <div className="text-center pt-5">
                       <img
-                        src="assets/file.png"
+                        src="assets/nodata.png"
                         className="img-fluid"
                         style={{ width: "40%" }}
                         alt="empty"
                       />
-                      <div className="mt-3">No data product</div>
                     </div>
                   </Col>
                 )}

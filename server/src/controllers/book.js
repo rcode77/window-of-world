@@ -7,39 +7,39 @@ exports.addBook = async (req, res) => {
 
     const newBook = await book.create({
       ...data,
-      bookCover: req.files["bookCover"][0].filename,
+      cover: req.files["cover"][0].filename,
       bookFile: req.files["bookFile"][0].filename,
     });
 
-    let dataFinal = await book.findOne({
-      where: {
-        id: newBook.id,
-      },
-      attributes: {
-        include: [
-          [
-            sequelize.fn(
-              "date_format",
-              sequelize.col("publicationDate"),
-              "%M %Y"
-            ),
-            "publicationDate",
-          ],
-        ],
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
+    // let dataFinal = await book.findOne({
+    //   where: {
+    //     id: newBook.id,
+    //   },
+    //   attributes: {
+    //     include: [
+    //       [
+    //         sequelize.fn(
+    //           "date_format",
+    //           sequelize.col("publicationDate"),
+    //           "%M %Y"
+    //         ),
+    //         "publicationDate",
+    //       ],
+    //     ],
+    //     exclude: ["createdAt", "updatedAt"],
+    //   },
+    // });
 
-    dataFinal = JSON.parse(JSON.stringify(dataFinal));
+    // dataFinal = JSON.parse(JSON.stringify(dataFinal));
     res.send({
       status: "success",
-      data: {
-        book: {
-          ...dataFinal,
-          bookFile: process.env.EPUB_PATH_FILE + dataFinal.bookFile,
-          bookCover: process.env.IMAGES_PATH_FILE + dataFinal.bookCover,
-        },
-      },
+      // data: {
+      //   book: {
+      //     ...dataFinal,
+      //     bookFile: process.env.EPUB_PATH_FILE + dataFinal.bookFile,
+      //     cover: process.env.IMAGES_PATH_FILE + dataFinal.cover,
+      //   },
+      // },
     });
   } catch (error) {
     console.log(error);
@@ -74,7 +74,7 @@ exports.getBooks = async (req, res) => {
       return {
         ...item,
         bookFile: process.env.EPUB_PATH_FILE + item.bookFile,
-        bookCover: process.env.IMAGES_PATH_FILE + item.bookCover,
+        cover: process.env.IMAGES_PATH_FILE + item.cover,
       };
     });
 
@@ -119,7 +119,7 @@ exports.getBook = async (req, res) => {
     data = {
       ...data,
       bookFile: process.env.EPUB_PATH_FILE + data.bookFile,
-      bookCover: process.env.IMAGES_PATH_FILE + data.bookCover,
+      cover: process.env.IMAGES_PATH_FILE + data.cover,
     };
 
     res.send({

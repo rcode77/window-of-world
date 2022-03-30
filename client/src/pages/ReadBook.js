@@ -1,19 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams, Link } from "react-router-dom";
 import { ReactReader } from "react-reader";
 
-import ebook from "../epub/melville-moby-dick.epub";
+// import ebook from "../epub/melville-moby-dick.epub";
 import logo from "../assets/wow2.png";
 
-const styles = {
-  proTitle: {
-    marginBottom: "30px",
-    fontFamily: "Times New Roman",
-    fontSize: "24px",
-    fontWeight: "700",
-  },
-};
+import { API } from "../config/api";
 
 function ReadBook() {
   const [page, setPage] = useState("");
@@ -30,6 +23,25 @@ function ReadBook() {
       );
     }
   };
+
+  const params = useParams();
+
+  const [book, setBook] = useState({});
+
+  // Fetching detail book data by id from database
+  const getBook = async () => {
+    try {
+      const response = await API.get("/book/" + params.id);
+      // Store book data to useState variabel
+      setBook(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getBook();
+  }, []);
 
   return (
     <div style={{ backgroundColor: "#E5E5E5", height: "100vh" }}>
@@ -51,7 +63,7 @@ function ReadBook() {
                 <ReactReader
                   showToc={false}
                   locationChanged={locationChanged}
-                  url={ebook}
+                  url={book?.bookFile}
                   getRendition={(rendition) =>
                     (renditionRef.current = rendition)
                   }

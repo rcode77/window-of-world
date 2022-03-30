@@ -68,18 +68,11 @@ const styles = {
 };
 
 function DetailBook() {
-  const navigate = useNavigate();
-
-  const handleRead = () => {
-    navigate("/read-book");
-  };
-  const handleAdd = () => {
-    navigate("/profile");
-  };
-
   let { id } = useParams();
+  const params = useParams();
 
   const [book, setBook] = useState({});
+  const [myBook, setMyBook] = useState(null);
 
   // Fetching detail book data by id from database
   const getBook = async (id) => {
@@ -92,8 +85,27 @@ function DetailBook() {
     }
   };
 
+  const myList = async () => {
+    const response = await API.get("/my-book/" + params.id);
+
+    setMyBook(response.data.data.myBook);
+  };
+
+  const addMyList = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await API.post("/add-my-list/" + params.id);
+      // Store book data to useState variabel
+      myList();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getBook(id);
+    myList();
+    addMyList();
   }, []);
 
   return (
@@ -109,7 +121,7 @@ function DetailBook() {
               <Col sm={6}>
                 <img
                   style={styles.coverImage}
-                  src={book.bookCover}
+                  src={book.cover}
                   alt="detailbook"
                 />
               </Col>
@@ -138,23 +150,29 @@ function DetailBook() {
             </Row>
             <Row style={styles.btn}>
               <Col sm={2}>
-                <Button style={styles.btnAdd} onClick={handleAdd}>
-                  Add My List{" "}
-                  <img
-                    style={{ marginLeft: "5px" }}
-                    src={bookmark}
-                    alt="bookmark"
-                  />
-                </Button>
+                {myBook === null ? (
+                  <Button style={styles.btnAdd} onClick={addMyList}>
+                    Add My List{" "}
+                    <img
+                      style={{ marginLeft: "5px" }}
+                      src={bookmark}
+                      alt="bookmark"
+                    />
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </Col>
               <Col sm={2}>
-                <Button style={styles.btnRead} onClick={handleRead}>
-                  Read Book{" "}
-                  <FontAwesomeIcon
-                    style={{ marginLeft: "5px" }}
-                    icon={faAngleRight}
-                  ></FontAwesomeIcon>
-                </Button>
+                <Link to={"/read-book/" + book.id}>
+                  <Button style={styles.btnRead}>
+                    Read Book{" "}
+                    <FontAwesomeIcon
+                      style={{ marginLeft: "5px" }}
+                      icon={faAngleRight}
+                    ></FontAwesomeIcon>
+                  </Button>
+                </Link>
               </Col>
             </Row>
           </Col>
