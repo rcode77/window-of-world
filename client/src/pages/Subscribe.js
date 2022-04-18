@@ -185,6 +185,7 @@ function Subscribe() {
                           placeholder="Input your account number"
                           name="accountNumber"
                           onChange={handleChange}
+                          value={form.accountNumber}
                         />
                         <Col>
                           <Form.Group className="form-group mb-3 mt-3">
