@@ -138,37 +138,44 @@ exports.getBook = async (req, res) => {
 exports.updateBook = async (req, res) => {
   try {
     const { id } = req.params;
+    const { ...data } = req.body;
 
-    await book.update(req.body, {
+    const update = {
+      ...data,
+      cover: req.files["cover"][0].filename,
+      bookFile: req.files["bookFile"][0].filename,
+    };
+
+    await book.update(update, {
       where: {
         id,
       },
     });
 
-    const data = await book.findOne({
-      where: {
-        id,
-      },
-      attributes: {
-        include: [
-          [
-            sequelize.fn(
-              "date_format",
-              sequelize.col("publicationDate"),
-              "%M %Y"
-            ),
-            "publicationDate",
-          ],
-        ],
-        exclude: ["createdAt", "updatedAt"],
-      },
-    });
+    // const data = await book.findOne({
+    //   where: {
+    //     id,
+    //   },
+    //   attributes: {
+    //     include: [
+    //       [
+    //         sequelize.fn(
+    //           "date_format",
+    //           sequelize.col("publicationDate"),
+    //           "%M %Y"
+    //         ),
+    //         "publicationDate",
+    //       ],
+    //     ],
+    //     exclude: ["createdAt", "updatedAt"],
+    //   },
+    // });
 
     res.send({
       status: "success",
-      data: {
-        book: data,
-      },
+      // data: {
+      //   book: data,
+      // },
     });
   } catch (error) {
     console.log(error);

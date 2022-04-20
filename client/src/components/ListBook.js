@@ -16,7 +16,7 @@ const styles = {
     fontSize: "18px",
     fontWeight: "400",
     color: "#929292",
-    marginBottom: "50px",
+    // marginBottom: "50px",
   },
 };
 
@@ -30,7 +30,11 @@ export default function ListBook({ item }) {
             cursor: "pointer",
           }}
         >
-          <Card.Img variant="top" src={item.cover} style={{ width: "90%" }} />
+          <Card.Img
+            variant="top"
+            src={item.cover}
+            style={{ width: "90%", borderRadius: 20 }}
+          />
         </a>
         <Card.Body>
           <a

@@ -11,6 +11,8 @@ import Profile from "./pages/Profile";
 import Transaction from "./pages/Transaction";
 import AddBook from "./pages/AddBook";
 import ReadBook from "./pages/ReadBook";
+import AllBook from "./pages/AllBook";
+import EditBook from "./pages/EditBook";
 
 import { UserContext } from "./context/UserContext";
 
@@ -78,6 +80,8 @@ function App() {
       <Route exact path="/book/:id" element={<DetailBook />} />
       <Route exact path="/transaction" element={<Transaction />} />
       <Route exact path="/addbook" element={<AddBook />} />
+      <Route exact path="/allbook" element={<AllBook />} />
+      <Route exact path="/editbook/:id" element={<EditBook />} />
       <Route exact path="/read-book/:id" element={<ReadBook />} />
     </Routes>
   );

@@ -64,6 +64,7 @@ const styles = {
     marginTop: "30px",
     marginLeft: "50px",
     width: "90%",
+    borderRadius: 20,
   },
 };
 

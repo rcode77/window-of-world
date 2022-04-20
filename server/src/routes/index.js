@@ -49,7 +49,7 @@ router.patch("/edit-profile", auth, uploadImage("userImage"), updateUser);
 router.get("/books", getBooks);
 router.get("/book/:id", getBook);
 router.post("/book", auth, uploadFile("cover", "bookFile"), addBook);
-router.patch("/book/:id", auth, updateBook);
+router.patch("/book/:id", auth, uploadFile("cover", "bookFile"), updateBook);
 router.delete("/book/:id", auth, deleteBook);
 
 router.post("/transaction", auth, uploadImage("transferProof"), addTransaction);

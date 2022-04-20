@@ -2,6 +2,9 @@ import { Col, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
+
 import { UserContext } from "../../context/UserContext";
 
 import logo from "../../assets/wow2.png";
@@ -50,6 +53,15 @@ export default function AdminNavbar() {
             <Col style={{ display: "flex", alignItems: "center" }}>
               <img src={book} style={{ height: "25px" }} alt="add" />
               <p style={styles.dropName}>Add Book</p>
+            </Col>
+          </Dropdown.Item>
+          <Dropdown.Item as={Link} to="/allbook">
+            <Col style={{ display: "flex", alignItems: "center" }}>
+              <FontAwesomeIcon
+                icon={faBook}
+                style={{ fontSize: 24, color: "#BCBCBC" }}
+              />
+              <p style={styles.dropName}>All Book</p>
             </Col>
           </Dropdown.Item>
           <Dropdown.Item onClick={logout}>
